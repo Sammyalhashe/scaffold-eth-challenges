@@ -22,10 +22,14 @@ contract Staker {
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
   event Stake(address from, uint256 amount);
-  function stake(address add, uint256 amount) public payable {
-    console.log("in stake");
-    balances[add] += amount;
-    emit Stake(add, amount);
+  function stake() public payable {
+    if (!openForWithdraw) {
+        balances[msg.sender] += msg.value;
+        emit Stake(msg.sender, msg.value);
+    }
+    else {
+        execute();
+    }
   }
 
 
@@ -47,9 +51,9 @@ contract Staker {
 
 
   // Add a `withdraw()` function to let users withdraw their balance
-  function withdraw(address add) public returns (uint256) {
-    uint256 amt = balances[add];
-    balances[add] = 0;
+  function withdraw() public returns (uint256) {
+    uint256 amt = balances[msg.sender];
+    balances[msg.sender] = 0;
     return amt;
   }
 
@@ -66,8 +70,11 @@ contract Staker {
 
 
   // Add the `receive()` special function that receives eth and calls stake()
-  function recieve(address add, uint256 amount) public {
-
+  // From (https://ethereum.stackexchange.com/questions/81994/what-is-the-receive-keyword-in-solidity)
+  // seems to be a defined fallback function that can only recieve ether
+  // and it called when a call to the contract has no calldata.
+  receive() external payable {
+    stake();
   }
 
 }
