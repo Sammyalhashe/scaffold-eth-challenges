@@ -12,7 +12,7 @@ contract Staker {
   // theshold definition
   uint256 public constant threshold = 1 ether;
   // deadline definition
-  uint256 public deadline = block.timestamp + 30 seconds;
+  uint256 public deadline = block.timestamp + 72 hours;
   ExampleExternalContract public exampleExternalContract;
 
   constructor(address exampleExternalContractAddress) public {
