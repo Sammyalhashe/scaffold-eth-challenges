@@ -5,8 +5,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./YourToken.sol";
 
 contract Vendor is Ownable {
+  // public vars
+  uint256 public constant tokensPerEth = 100;
 
-  //event BuyTokens(address buyer, uint256 amountOfETH, uint256 amountOfTokens);
+  event BuyTokens(address buyer, uint256 amountOfETH, uint256 amountOfTokens);
 
   YourToken public yourToken;
 
@@ -15,6 +17,11 @@ contract Vendor is Ownable {
   }
 
   // ToDo: create a payable buyTokens() function:
+  function buyTokens() public payable returns (uint256) {
+    uint256 tokens = msg.value * tokensPerEth;
+    emit BuyTokens(msg.sender, msg.value, tokens);
+    return tokens;
+  }
 
   // ToDo: create a withdraw() function that lets the owner withdraw ETH
 
